@@ -69,11 +69,11 @@ final class FlattenExceptionNormalizer implements DenormalizerInterface, Context
         $object->setMessage($data['message']);
         $object->setCode($data['code']);
         $object->setStatusCode($data['status'] ?? 500);
-        $object->setClass($data['class']);
-        $object->setFile($data['file']);
-        $object->setLine($data['line']);
-        $object->setStatusText($data['status_text']);
-        $object->setHeaders((array) $data['headers']);
+        $object->setClass($data['class'] ?? '');
+        $object->setFile($data['file'] ?? '');
+        $object->setLine($data['line'] ?? 0);
+        $object->setStatusText($data['status_text'] ?? '');
+        $object->setHeaders((array) ($data['headers'] ?? []));
 
         if (isset($data['previous'])) {
             $object->setPrevious($this->denormalize($data['previous'], $type, $format, $context));
@@ -81,11 +81,11 @@ final class FlattenExceptionNormalizer implements DenormalizerInterface, Context
 
         $property = new \ReflectionProperty(FlattenException::class, 'trace');
         $property->setAccessible(true);
-        $property->setValue($object, (array) $data['trace']);
+        $property->setValue($object, (array) ($data['trace'] ?? []));
 
         $property = new \ReflectionProperty(FlattenException::class, 'traceAsString');
         $property->setAccessible(true);
-        $property->setValue($object, $data['trace_as_string']);
+        $property->setValue($object, $data['trace_as_string'] ?? '');
 
         return $object;
     }
